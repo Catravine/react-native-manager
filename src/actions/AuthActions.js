@@ -18,18 +18,15 @@ export const passwordChanged = (text) => ({
     payload: text
 });
 
-export const loginUser = ({ email, password }) => {
-    return (dispatch) => {
-        dispatch({ type: LOGIN_USER });
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(user => loginUserSuccess(dispatch, user))
-            .catch((error) => {
-                console.log(error);
-                firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .then(user => loginUserSuccess(dispatch, user))
-                    .catch(() => loginUserFail(dispatch));
-            });
-    };
+export const loginUser = ({ email, password }) => (dispatch) => {
+    dispatch({ type: LOGIN_USER });
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(user => loginUserSuccess(dispatch, user))
+        .catch(() => {
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(user => loginUserSuccess(dispatch, user))
+                .catch(() => loginUserFail(dispatch));
+        });
 };
 
 const loginUserSuccess = (dispatch, user) => {
